@@ -101,7 +101,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
     // wifi
     final WifiManager mWifiManager;
     AsyncChannel mWifiChannel;
-    boolean mWifiEnabled, mWifiConnected;
+    boolean mWifiEnabled, mWifiConnected, mEthernetConnected;
     int mWifiRssi, mWifiLevel;
     String mWifiSsid;
     int mWifiIconId = 0;
@@ -374,7 +374,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
         if (mDemoMode) return;
         cluster.setWifiIndicators(
                 // only show wifi in the cluster if connected or if wifi-only
-                mWifiEnabled && (mWifiConnected || !mHasMobileDataFeature),
+                mEthernetConnected || (mWifiEnabled && (mWifiConnected || !mHasMobileDataFeature)),
                 mWifiIconId,
                 mContentDescriptionWifi);
 
@@ -1182,7 +1182,9 @@ public class NetworkControllerImpl extends BroadcastReceiver
         }
 
         final boolean ethernetConnected = (mConnectedNetworkType == ConnectivityManager.TYPE_ETHERNET);
+        mEthernetConnected = ethernetConnected;
         if (ethernetConnected) {
+            mWifiIconId = R.drawable.stat_sys_ethernet_icon;
             combinedLabel = context.getString(R.string.ethernet_label);
         }
 
